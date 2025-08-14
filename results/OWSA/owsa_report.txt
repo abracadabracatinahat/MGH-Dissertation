@@ -1,0 +1,67 @@
+ONE-WAY SENSITIVITY ANALYSIS (OWSA) REPORT
+==========================================
+
+Generated: 2025-08-13 21:49:03 
+
+BASE CASE RESULTS
+-----------------
+Base case ICER: £61883.53 per QALY
+Base case Original Population ICER: £61883.53 per QALY
+
+METHODOLOGY
+-----------
+This OWSA was conducted deterministically to evaluate the relative importance
+of several key parameters. Each parameter was modified by ± 10 % whilst keeping
+all other parameters constant.
+
+PARAMETERS ANALYZED
+-------------------
+ai_morphometry_per_scan:
+  Original value: 0.2600
+  Lower bound (-10%): 0.2340
+  Upper bound (+10%): 0.2860
+  Lower bound ICER: £62493.57 per QALY
+  Upper bound ICER: £62417.50 per QALY
+  Lower bound Original Population ICER: £NA per QALY
+  Upper bound Original Population ICER: £NA per QALY
+
+radiologist_cost_non_ai:
+  Original value: 31.0000
+  Lower bound (-10%): 27.9000
+  Upper bound (+10%): 34.1000
+  Lower bound ICER: £66969.29 per QALY
+  Upper bound ICER: £60305.69 per QALY
+  Lower bound Original Population ICER: £NA per QALY
+  Upper bound Original Population ICER: £NA per QALY
+
+ai_max_adoption:
+  Original value: 0.9000
+  Lower bound (-10%): 0.8100
+  Upper bound (+10%): 0.9900
+  Lower bound ICER: £69232.91 per QALY
+  Upper bound ICER: £54694.88 per QALY
+  Lower bound Original Population ICER: £NA per QALY
+  Upper bound Original Population ICER: £NA per QALY
+
+ai_adoption_rate:
+  Original value: 0.9000
+  Lower bound (-10%): 0.8100
+  Upper bound (+10%): 0.9900
+  Lower bound ICER: £59482.10 per QALY
+  Upper bound ICER: £66021.39 per QALY
+  Lower bound Original Population ICER: £NA per QALY
+  Upper bound Original Population ICER: £NA per QALY
+
+ai_initial_adoption:
+  Original value: 0.0500
+  Lower bound (-10%): 0.0450
+  Upper bound (+10%): 0.0550
+  Lower bound ICER: £63748.06 per QALY
+  Upper bound ICER: £65390.75 per QALY
+  Lower bound Original Population ICER: £NA per QALY
+  Upper bound Original Population ICER: £NA per QALY
+
+SUMMARY
+-------
+The OWSA results show the sensitivity of the ICER to variations in key parameters.
+Parameters with larger percentage changes in ICER have greater impact on the model results.

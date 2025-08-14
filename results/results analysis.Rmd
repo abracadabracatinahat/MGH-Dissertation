@@ -1,0 +1,268 @@
+---
+title: "Assessing the Cost Effectiveness of ScanOMetrics Neuroimaging AI for Dementia Diagnosis in UK"
+subtitle: "Project Placement Dissertation"
+author: "Candidate Number: 1092732"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+# Libraries and Data
+```{r setup}
+# Load necessary libraries
+library(ggplot2)
+library(patchwork)
+library(RColorBrewer)
+library(scales) 
+
+# Load the data
+study_name <- ""
+base_path <- ""
+
+summary_ai_result <- read.csv(paste0(base_path, study_name, "summary_results_AI_BrainMorphometry_All_Areas.csv"))
+summary_standard_result <- read.csv(paste0(base_path, study_name, "summary_results_Standard_Care_All_Areas.csv"))
+
+detailed_ai_result <- read.csv(paste0(base_path, study_name, "detailed_results_AI_BrainMorphometry_All_Areas.csv"))
+detailed_standard_result <- read.csv(paste0(base_path, study_name, "detailed_results_Standard_Care_All_Areas.csv"))
+
+summary_ai_result$original_neuroimaging_total_tests <- summary_ai_result$original_neuroimaging_tests + summary_ai_result$original_ai_morphometry_tests
+summary_standard_result$original_neuroimaging_total_tests <- summary_standard_result$original_neuroimaging_tests + summary_standard_result$original_ai_morphometry_tests
+
+summary_ai_result$original_neuroimaging_total_diagnosed <- summary_ai_result$original_neuroimaging_diagnosed + summary_ai_result$original_ai_morphometry_diagnosed
+summary_standard_result$original_neuroimaging_total_diagnosed <- summary_standard_result$original_neuroimaging_diagnosed + summary_standard_result$original_ai_morphometry_diagnosed
+
+```
+
+# Figure 1: Diagnosed Dementia Over Time
+```{r fig1, fig.width=15,  fig.height=5,fig.align='center',echo=FALSE,message=FALSE,warning=FALSE, results='hide'}
+if (!dir.exists("figures")) dir.create("figures")
+
+# Define a consistent palette for age groups
+age_groups <- sort(unique(detailed_ai_result$age_group))
+age_group_colors <- brewer.pal(n = length(age_groups), name = "Set2")
+names(age_group_colors) <- age_groups
+
+# Base theme for both plots
+base_theme <- theme_minimal() +
+  theme(
+    plot.title       = element_text(size = 14, face = "bold", hjust = 0.5),
+    axis.title       = element_text(size = 12),
+    axis.text        = element_text(size = 10),
+    axis.text.x      = element_text(angle = 45, hjust = 1, vjust = 1),
+    legend.position  = "bottom",
+    legend.title     = element_text(size = 10),
+    legend.text      = element_text(size = 9),
+    plot.margin      = margin(5, 5, 5, 5)
+  )
+
+# AI data plot (left)
+p_ai <- ggplot(detailed_ai_result, 
+               aes(x = Year,
+                   y = Original_Living_Population,
+                   fill = age_group)) +
+  geom_col(width = 0.7) +
+  scale_fill_manual(values = age_group_colors) +
+  scale_y_continuous(labels = comma) +
+  labs(
+    title = "AI: Original Living Population by Age Group",
+    x     = "Year",
+    y     = "Living Population (n)",
+    fill  = "Age Group"
+  ) +
+  base_theme
+
+# Standard data plot (right)
+p_std <- ggplot(detailed_standard_result, 
+                aes(x = Year,
+                    y = Original_Living_Population,
+                    fill = age_group)) +
+  geom_col(width = 0.7) +
+  scale_fill_manual(values = age_group_colors) +
+  scale_y_continuous(labels = comma) +
+  labs(
+    title = "Standard: Original Living Population by Age Group",
+    x     = "Year",
+    y     = "Living Population (n)",
+    fill  = "Age Group"
+  ) +
+  base_theme +
+  theme(legend.position = "none")  # omit redundant legend on right
+
+# Combine side by side
+final_plot <- p_ai + p_std + plot_layout(ncol = 2, widths = c(1, 1))
+
+# Save to figures/
+ggsave(
+  filename = "figures/fig1_living_population_comparison.png",
+  plot     = final_plot,
+  width    = 12,  # inches
+  height   = 5,   # inches
+  dpi      = 300
+)
+
+# Display
+final_plot
+
+
+```
+
+
+# Figure 2: Diagnosed Dementia Over Time
+```{r fig2, fig.width=15,  fig.height=5,fig.align='center',echo=FALSE,message=FALSE,warning=FALSE, results='hide'}
+if (!dir.exists("figures")) dir.create("figures")
+# Define consistent colors
+model_colors <- c("AI" = "#1f77b4", "Standard" = "#d62728")
+
+# 1. Original Neuroimaging Diagnosed
+p1 <- ggplot() +
+  geom_line(data = summary_ai_result,
+            aes(x = Year, y = original_neuroimaging_diagnosed, color = "AI"),
+            size = 1) +
+  geom_line(data = summary_standard_result,
+            aes(x = Year, y = original_neuroimaging_diagnosed, color = "Standard"),
+            size = 1) +
+  labs(
+    title = "Original Neuroimaging Diagnosed",
+    x     = "Year",
+    y     = "Count",
+    color = "Model"
+  ) +
+  scale_color_manual(values = model_colors) +
+  theme_minimal() +
+  theme(
+    plot.title      = element_text(size = 14, face = "bold", hjust = 0.5),
+    legend.position = "bottom",
+    legend.title    = element_text(size = 10),
+    legend.text     = element_text(size = 9)
+  )
+
+# 2. Original AI Morphometry Diagnosed
+p2 <- ggplot() +
+  geom_line(data = summary_ai_result,
+            aes(x = Year, y = original_ai_morphometry_diagnosed, color = "AI"),
+            size = 1) +
+  geom_line(data = summary_standard_result,
+            aes(x = Year, y = original_ai_morphometry_diagnosed, color = "Standard"),
+            size = 1) +
+  labs(
+    title = "Original AI Morphometry Diagnosed",
+    x     = "Year",
+    y     = "Count"
+  ) +
+  scale_color_manual(values = model_colors) +
+  theme_minimal() +
+  theme(
+    plot.title      = element_text(size = 14, face = "bold", hjust = 0.5),
+    legend.position = "none"
+  )
+
+# 3. Original Total Neuroimaging Diagnosed
+p3 <- ggplot() +
+  geom_line(data = summary_ai_result,
+            aes(x = Year, y = original_neuroimaging_total_diagnosed, color = "AI"),
+            size = 1) +
+  geom_line(data = summary_standard_result,
+            aes(x = Year, y = original_neuroimaging_total_diagnosed, color = "Standard"),
+            size = 1) +
+  labs(
+    title = "Original Total Neuroimaging Diagnosed",
+    x     = "Year",
+    y     = "Count"
+  ) +
+  scale_color_manual(values = model_colors) +
+  theme_minimal() +
+  theme(
+    plot.title      = element_text(size = 14, face = "bold", hjust = 0.5),
+    legend.position = "none"
+  )
+
+# Combine with custom relative widths (3:3:3 here)
+final_plot <- p1 + p2 + p3 +
+  plot_layout(ncol = 3, widths = c(3, 3, 3)) &
+  theme(plot.margin = margin(5, 5, 5, 5))
+
+
+
+# Save to figures/
+ggsave(
+  filename = "figures/fig2_diagnosed_neuroimaging.png",
+  plot     = final_plot,
+  width    = 15,     # total width in inches
+  height   = 5,      # total height in inches
+  dpi      = 300
+)
+final_plot
+```
+
+
+
+# Figure 3: One-Way Sensitivity Analysis Tornado Plot
+
+```{r, fig.width=10, fig.height=8, fig.align='center', echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+
+library(dplyr)
+library(ggplot2)
+library(scales)   # for comma()
+library(tidyr)
+
+# 1) Read in your detailed results
+icer_df   <- read.csv("OWSA/owsa_summary.csv")
+base_icer <- 62335.23
+
+# 4) Map to nice labels and compute swing
+icer_df <- icer_df %>%
+  mutate(
+    Parameter = case_when(
+      Parameter == "ai_morphometry_per_scan" ~ "AI Brain Morphometry Cost per Scan",
+      Parameter == "ai_initial_adoption"     ~ "AI Initial Adoption Rate",
+      Parameter == "ai_adoption_rate"        ~ "AI Adoption Rate",
+      Parameter == "ai_max_adoption"         ~ "AI Maximum Adoption Rate",
+      Parameter == "radiologist_cost_non_ai" ~ "Radiologist Cost (Standard Neuroimaging)",
+      TRUE                                   ~ Parameter
+    ),
+    low_x     = Lower_ICER,
+    low_xend  = base_icer,
+    high_x    = base_icer,
+    high_xend = Upper_ICER,
+    swing     = pmax(abs(base_icer - Lower_ICER),
+                     abs(Upper_ICER - base_icer))
+  ) %>%
+  arrange(desc(swing)) %>%
+  mutate(Parameter = factor(Parameter, levels = unique(Parameter)))
+
+# 5) Build a combined segments tibble
+segments <- bind_rows(
+  icer_df %>% transmute(Parameter, x = low_x,   xend = low_xend,  type = "Lower bound"),
+  icer_df %>% transmute(Parameter, x = high_x,  xend = high_xend, type = "Upper bound")
+)
+
+# 6) Plot tornado
+final_plot <- ggplot(segments, aes(x = x, xend = xend, y = Parameter, yend = Parameter, color = type)) +
+  geom_segment(size = 1.5) +
+  geom_vline(xintercept = base_icer, linetype = "dashed", color = "darkred") +
+  scale_color_manual(
+    name   = "",
+    values = c("Lower bound" = "#1f77b4", "Upper bound" = "#ff7f0e")
+  ) +
+  labs(
+    x        = "ICER (£ per QALY)",
+    y        = NULL,
+    title    = "One-Way Sensitivity Tornado Plot",
+    subtitle = paste0("Base-case ICER (£ per QALY) = ", comma(base_icer, 1))
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor   = element_blank(),
+    legend.position    = "bottom"
+  ) +
+  scale_x_continuous(expand = expansion(add = c(0.1, 0.1)))
+
+ggsave(
+  filename = "figures/fig3_owsa_tornado_plot.png",
+  width    = 10,   # inches
+  height   = 8,    # inches
+  dpi      = 300
+)
+
+final_plot
+```

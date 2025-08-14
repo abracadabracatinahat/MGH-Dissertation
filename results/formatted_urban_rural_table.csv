@@ -1,0 +1,5 @@
+Scenario,Area,ICER,Costs_per_Dementia_Diagnosis,QALY_gains
+AF,Urban,"£9,632.264","£60,676.04","153,347.2"
+,Rural,"£9,632.264","£60,676.04","148,785.8"
+No AF,Urban,-,"£60,692.61","153,347.5"
+,Rural,-,"£60,692.61","148,786.1"

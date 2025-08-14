@@ -1,0 +1,40 @@
+AI DEMENTIA ECONOMIC MODEL - ORIGINAL POPULATION SUMMARY REPORT
+================================================================
+
+Generated: 2025-08-14 14:39:32 
+
+REPORT FOCUS: ORIGINAL COHORT POPULATION ONLY
+This report analyzes outcomes for the original population cohort,
+excluding any population inflow effects from the simulation.
+
+KEY FINDINGS - ORIGINAL POPULATION ONLY
+----------------------------------------
+Original population tracked: 78,980 individuals
+Incremental cost per original person: £6,604.43
+
+ORIGINAL POPULATION DETAILED COMPARISON
+--------------------------------------
+                            Metric           AI        No_AI    Difference
+            Original Subgroup Cost 5.250773e+05 5.250788e+05 -1.498124e+00
+ Original Subgroup Discounted Cost 9.402490e+04 9.402517e+04 -2.707313e-01
+          Original Cost per Person 1.300183e+09 1.300176e+09  6.604431e+03
+                   Average GP Wait 2.840183e-02 2.840610e-02 -4.271921e-06
+                   Average MC Wait 3.627090e-02 3.627731e-02 -6.415554e-06
+ Percent_Change
+  -0.0002853140
+  -0.0002879349
+   0.0005079644
+  -0.0150387458
+  -0.0176847561
+
+
+METHODOLOGY NOTE
+----------------
+This analysis focuses exclusively on the original population cohort
+that entered the simulation at Year 0. It excludes:
+- New population inflow from aging
+- Immigration effects
+- Population growth
+
+This provides a pure lifetime cohort analysis showing the long-term
+impact of AI-enhanced dementia care on a fixed population group.
